@@ -1,0 +1,130 @@
+import 'package:flutter/material.dart';
+import 'package:odc_flutter/models/settings_card_model.dart';
+import 'package:odc_flutter/presentation/screens/login/login_screen.dart';
+import 'package:odc_flutter/presentation/screens/settings_tile_screens/faq.dart';
+import 'package:odc_flutter/presentation/styles/colours.dart';
+
+import '../../../ResuableWidgets/default_button.dart';
+import '../lectures/lectures_screen.dart';
+import '../settings_tile_screens/our_partners.dart';
+import '../settings_tile_screens/support.dart';
+import '../settings_tile_screens/terms_and_conditions.dart';
+
+class NavSettings extends StatelessWidget {
+  List<SettingsCard> settingsCards = [
+    SettingsCard(
+      title: 'FAQ',
+      Screen: FAQScreen(),
+    ),
+    SettingsCard(
+      title: 'Terms & Conditions',
+      Screen: TermsAndConditions(),
+    ),
+    SettingsCard(
+      title: 'Our Partners',
+      Screen: OurPartners(),
+    ),
+    SettingsCard(
+      title: 'Support',
+      Screen: SupportScreen(),
+    ),
+    SettingsCard(
+      title: 'Logout',
+      Screen: LecturesScreen(),
+    ),
+  ];
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0.0,
+        title: const Text(
+          'Settings',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: ListView.separated(
+        separatorBuilder: (BuildContext context, int index) => Divider(),
+        itemCount: settingsCards.length,
+        itemBuilder: (context, index) => ListTile(
+          title: Text(settingsCards[index].title),
+          trailing: IconButton(
+            icon: Icon(Icons.arrow_forward_ios),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          onTap: () {
+            settingsCards[index].title != 'Logout'
+                ? Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => settingsCards[index].Screen,
+                    ))
+                : showDialog(
+                    context: context,
+                    builder: (context) {
+                      var height = MediaQuery.of(context).size.height;
+                      var width = MediaQuery.of(context).size.width;
+                      return Container(
+                        // width:
+                        //     MediaQuery.of(context).size.width * 0.45,
+                        child: AlertDialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          title: Center(
+                            child: Text('Are You sure you want to log out?'),
+                          ),
+                          actions: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                smalldefButton(
+                                  context: context,
+                                  color: Colors.black,
+                                  text: 'Cancel',
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.03,
+                                ),
+                                smalldefButton(
+                                  color: primaryColor,
+                                  text: 'Logout',
+                                  onTap: () {
+                                    //pref.clear
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => LoginScreen(),
+                                        ));
+                                  },
+                                  context: context,
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.02,
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+          },
+        ),
+      ),
+    );
+  }
+}
